@@ -19,7 +19,7 @@ try:
         english_word = db.fetchone()
         english_word = re.search('\'(.*)\'' , str(english_word)).group(1)
         translated = fastDic.find_meaning(english_word)
-        str_to_file = str(english_word) + ": " + str(translated)
+        str_to_file = str(english_word) + ": " + str(translated) + "\n"
         print (str_to_file)
         file.write(str_to_file)
 except KeyboardInterrupt:
