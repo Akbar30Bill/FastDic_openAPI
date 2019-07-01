@@ -2,6 +2,7 @@
 
 import urllib.request
 import sys
+import os
 
 def produce_link( arg ):
     arg = str(arg.encode('utf8'))
@@ -32,7 +33,8 @@ try:
         print(find_meaning(input()))
         sys.exit(0)
     if sys.argv[1] == '-h' or sys.argv[1] == '--help':
-        print("usage: python3 fastdic.py [-f file] [word/words]\n")
+        print("usage: fastDic[-f file] [word/words]\n")
+        print("use -c or --cowsay to use cowsay :P")
         print("fastdic, a python script for analysing fastdic website\n\n")
         print("positional arguments:")
         print("  word/words\t\twords to search in fastdic database")
@@ -42,8 +44,11 @@ try:
         file = open(sys.argv[2] , "r")
         words = file.read()
         words = words.split()
-        for x in range (0 , len(words)):
-            print(find_meaning(words[x]))
+        for word in words:
+            print(find_meaning(word))
+    elif sys.argv[1] == '-c' or sys.argv[1] == '--cowsay':
+        for x in range(2 , len(sys.argv)):
+            os.system('cowsay \"' + find_meaning(sys.argv[x]) + "\"")
     else:
         for x in range(1 , len(sys.argv)):
             print(find_meaning(sys.argv[x]))
