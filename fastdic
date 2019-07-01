@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+import urllib.request
+import sys
+
+def produce_link( arg ):
+    arg = str(arg.encode('utf8'))
+    arg = arg.replace('b\'','')
+    arg = arg.replace('\'','')
+    arg = arg.replace('\\','%')
+    arg = arg.replace('x','')
+    return "https://fastdic.com/word/" + arg
+
+def make_content ( content ):
+    content = content.read().decode('utf8')
+    # print (content) # uncomment to get produces HTML
+    content = content.splitlines()
+    for x in range(0 , len(content)):
+        if not ("<" in content[x]):
+            content[x] = content[x].replace('\t' , '')
+            if not (content[x] == "\n" or content[x] == "" or len(content[x]) < 2 ):
+                return content[x]
+    content = "No such word available"
+    return content
+
+def find_meaning ( word ):
+    content = urllib.request.urlopen(produce_link(word))
+    return make_content(content)
+
+try:
+    if ( len(sys.argv) == 1 ):
+        print(find_meaning(input()))
+        sys.exit(0)
+    if sys.argv[1] == '-h' or sys.argv[1] == '--help':
+        print("usage: python3 fastdic.py [-f file] [word/words]\n")
+        print("fastdic, a python script for analysing fastdic website\n\n")
+        print("positional arguments:")
+        print("  word/words\t\twords to search in fastdic database")
+        print("  file\t\t\tfile name for file input")
+        sys.exit(0)
+    elif sys.argv[1] == '-f' or sys.argv[1] == '--file':
+        file = open(sys.argv[2] , "r")
+        words = file.read()
+        words = words.split()
+        for x in range (0 , len(words)):
+            print(find_meaning(words[x]))
+    else:
+        for x in range(1 , len(sys.argv)):
+            print(find_meaning(sys.argv[x]))
+
+except urllib.error.URLError:
+    print ("service unreachable check network connection")
+except FileNotFoundError:
+    print("No such file available")
